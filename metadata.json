@@ -1,0 +1,6 @@
+{
+  "name": "Derash Inventory Management",
+  "description": "A modern, secure, and lightweight inventory management system with Ethiopian calendar integration, image previews, and PDF reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
