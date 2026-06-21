@@ -377,7 +377,7 @@ export default function ProductFormModal({
         <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden bg-white">
           
           {/* Scrollable Form Body Container */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-6">
+          <div className="flex-1 overflow-y-auto p-8 pb-16 space-y-6">
             
             {(localError || errorText) && (
               <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-100/60 text-rose-700 text-xs font-bold leading-relaxed flex items-start gap-2.5 animate-shake">
@@ -569,7 +569,7 @@ export default function ProductFormModal({
                       <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">JPEG/PNG, Max Size 7MB</span>
                       <input
                         type="file"
-                        accept="image/png, image/jpeg, image/jpg"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
                         onChange={handleImageFile}
                         className="hidden"
                       />
@@ -622,7 +622,7 @@ export default function ProductFormModal({
                       <span className="text-[10px] text-zinc-450 font-semibold uppercase tracking-wider">JPEG/PNG, MAX 7MB</span>
                       <input
                         type="file"
-                        accept="image/png, image/jpeg, image/jpg"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
                         onChange={handleReceiptImageFile}
                         className="hidden"
                       />

@@ -1271,9 +1271,10 @@ export async function generateSoldUnitsPDF(
       loadedImages[s.id] = null;
     }
 
-    if (s.receipt_image) {
+    const receiptToLoad = s.receipt_image || product?.receipt_image;
+    if (receiptToLoad) {
       try {
-        loadedReceipts[s.id] = await getBase64Image(s.receipt_image);
+        loadedReceipts[s.id] = await getBase64Image(receiptToLoad);
       } catch (e) {
         loadedReceipts[s.id] = null;
       }

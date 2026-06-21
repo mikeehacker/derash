@@ -1288,14 +1288,42 @@ export default function Dashboard({ user, token, onLogout, onNavigate, lang, onL
               </button>
             </div>
 
-            {viewingProduct.product_image && (
-              <div className="relative overflow-hidden rounded-3xl border border-zinc-150 bg-zinc-50 shadow-xs max-h-48 flex items-center justify-center">
-                <img
-                  src={viewingProduct.product_image}
-                  alt={viewingProduct.product_name}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-48 object-cover transition-transform duration-500 hover:scale-102"
-                />
+            {/* Display both product photo and receipt photo side-by-side or stacked */}
+            {(viewingProduct.product_image || viewingProduct.receipt_image) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {viewingProduct.product_image && (
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider block pl-0.5">
+                      {lang === "am" ? "የዕቃው ፎቶ" : "Product Photo"}
+                    </span>
+                    <div className="relative overflow-hidden rounded-3xl border border-zinc-150 bg-zinc-50 shadow-xs h-40 flex items-center justify-center">
+                      <img
+                        src={viewingProduct.product_image}
+                        alt={viewingProduct.product_name}
+                        referrerPolicy="no-referrer"
+                        onClick={() => setZoomedImage(viewingProduct.product_image || null)}
+                        className="w-full h-40 object-cover transition-transform duration-500 hover:scale-102 cursor-zoom-in"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {viewingProduct.receipt_image && (
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider block pl-0.5">
+                      {lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}
+                    </span>
+                    <div className="relative overflow-hidden rounded-3xl border border-zinc-150 bg-zinc-50 shadow-xs h-40 flex items-center justify-center">
+                      <img
+                        src={viewingProduct.receipt_image}
+                        alt="Receipt Photo"
+                        referrerPolicy="no-referrer"
+                        onClick={() => setZoomedImage(viewingProduct.receipt_image || null)}
+                        className="w-full h-40 object-cover transition-transform duration-500 hover:scale-102 cursor-zoom-in"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

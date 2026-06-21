@@ -253,7 +253,7 @@ export default function SoldProductFormModal({
         </div>
 
         <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden bg-white">
-          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          <div className="flex-1 overflow-y-auto p-6 pb-12 space-y-5">
             
             {localError && (
               <div className="p-4 rounded-2xl bg-rose-50 border-2 border-rose-100 text-rose-600 text-xs font-bold flex items-start gap-2">
