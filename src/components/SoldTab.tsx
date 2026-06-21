@@ -740,11 +740,11 @@ export default function SoldTab({
 
                         {/* 8. የዕቃው የተገዛበት ደረሰኝ ፎቶ */}
                         <td className="py-4 px-4 text-center">
-                          {s.receipt_image ? (
+                          {(s.receipt_image || product?.receipt_image) ? (
                             <img
-                              src={s.receipt_image}
+                              src={s.receipt_image || product?.receipt_image}
                               alt="Receipt"
-                              onClick={() => setZoomedImage(s.receipt_image || null)}
+                              onClick={() => setZoomedImage((s.receipt_image || product?.receipt_image) || null)}
                               className="w-10 h-10 rounded-lg object-cover border border-zinc-200 cursor-zoom-in hover:scale-105 transition shadow-sm mx-auto"
                             />
                           ) : (
@@ -860,11 +860,11 @@ export default function SoldTab({
                       {/* Receipt Image Thumbnail preview in mobile view */}
                       <div className="bg-white/50 border border-zinc-100 p-2.5 rounded-xl text-xs font-bold text-zinc-700 flex items-center justify-between">
                         <span className="text-[10px] text-zinc-400">{lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}</span>
-                        {s.receipt_image ? (
+                        {(s.receipt_image || product?.receipt_image) ? (
                           <img
-                            src={s.receipt_image}
+                            src={s.receipt_image || product?.receipt_image}
                             alt="Receipt Preview"
-                            onClick={() => setZoomedImage(s.receipt_image || null)}
+                            onClick={() => setZoomedImage((s.receipt_image || product?.receipt_image) || null)}
                             className="w-10 h-10 rounded-lg object-cover border border-zinc-200 cursor-zoom-in hover:scale-105 transition shadow-sm"
                           />
                         ) : (

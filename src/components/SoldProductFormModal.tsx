@@ -454,10 +454,24 @@ export default function SoldProductFormModal({
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 rounded-2xl p-4 hover:bg-zinc-50/60 hover:border-[#009b3a]/50 bg-zinc-50/10 cursor-pointer transition-all duration-150 select-none text-center">
-                  <Upload className="w-5 h-5 text-zinc-450 mb-2" />
-                  <span className="text-xs font-bold text-zinc-700 block mb-0.5">{lang === "am" ? "የደረሰኝ ፎቶ ለመጫን እዚህ ጋ ይንኩ" : "Upload Receipt Photo"}</span>
-                  <span className="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">JPEG/PNG/WebP, Max 7MB</span>
+                <label className="group flex flex-col items-center justify-center border-2 border-dashed border-zinc-200 rounded-2xl p-6 sm:p-8 hover:bg-zinc-50/60 hover:border-[#009b3a]/50 bg-zinc-50/10 cursor-pointer transition-all duration-150 select-none text-center">
+                  <div className="w-12 h-12 rounded-full bg-zinc-100/80 flex items-center justify-center mb-3 text-zinc-400 transition group-hover:text-[#009b3a] group-hover:bg-emerald-50">
+                    <svg 
+                      className="w-5.5 h-5.5 text-zinc-400 group-hover:text-[#009b3a] transition-colors" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z" />
+                      <path d="M12 6v12" />
+                      <path d="M9.5 8.5h3a1.5 1.5 0 0 1 0 3h-2a1.5 1.5 0 0 0 0 3h3" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-bold text-zinc-700 block mb-1">{lang === "am" ? "ደረሰኝ ፎቶ ይጫኑ" : "Upload Receipt Photo"}</span>
+                  <span className="text-[10px] text-zinc-450 font-semibold uppercase tracking-wider">JPEG/PNG, MAX 7MB</span>
                   <input
                     type="file"
                     accept="image/png, image/jpeg, image/jpg, image/webp"
