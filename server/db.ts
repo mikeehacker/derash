@@ -20,6 +20,7 @@ export interface Product {
   payment_method: "CBE Birr" | "Telebirr" | "Cash";
   total_price: number;
   product_image?: string; // base64 or file path
+  receipt_image?: string;
   created_by: string; // user id
   created_by_name: string;
   created_at: string;

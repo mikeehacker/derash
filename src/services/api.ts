@@ -84,7 +84,7 @@ export const api = {
     });
   },
 
-  async updateProduct(id: string, payload: Partial<Product> & { clear_image?: boolean }): Promise<Product> {
+  async updateProduct(id: string, payload: Partial<Product> & { clear_image?: boolean; clear_receipt_image?: boolean }): Promise<Product> {
     return fetchWithAuth<Product>(`/products/${id}`, {
       method: "PUT",
       body: JSON.stringify(payload),

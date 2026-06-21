@@ -114,6 +114,7 @@ export interface TranslationDictionary {
   formPurchaseDate: string;
   formPaymentMethod: string;
   formImageAttachment: string;
+  formReceiptAttachment: string;
   formImageAttached: string;
   formChangePhoto: string;
   formSelectPhoto: string;
@@ -231,6 +232,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     formPurchaseDate: "Registered Date of the Item",
     formPaymentMethod: "Payment Gateway",
     formImageAttachment: "Product Photo",
+    formReceiptAttachment: "Product Purchase Receipt Photo",
     formImageAttached: "Photo attachment captured",
     formChangePhoto: "Change Photo",
     formSelectPhoto: "click to upload a picture",
@@ -346,6 +348,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     formPurchaseDate: "የዕቃው የተመዘገበበት ቀን",
     formPaymentMethod: "የክፍያ መተላለፊያ",
     formImageAttachment: "የዕቃው ፎቶ",
+    formReceiptAttachment: "የዕቃው የተገዛበት ደረሰኝ ፎቶ",
     formImageAttached: "ፎቶው በተሳካ ሁኔታ ተያይዟል",
     formChangePhoto: "ፎቶ ቀይር",
     formSelectPhoto: "ምስል ለመጫን እዚህ ይጫኑ",

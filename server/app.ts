@@ -204,7 +204,7 @@ app.get("/api/products/:id", authenticate, async (req: any, res) => {
 
 // 7. Product Management CRUD: CREATE
 app.post("/api/products", authenticate, async (req: any, res) => {
-  const { product_name, quantity, sold_quantity, purchase_date, payment_method, total_price, product_image } = req.body;
+  const { product_name, quantity, sold_quantity, purchase_date, payment_method, total_price, product_image, receipt_image } = req.body;
 
   // Validation rules
   if (!product_name || !product_name.trim()) {
@@ -251,6 +251,23 @@ app.post("/api/products", authenticate, async (req: any, res) => {
     }
   }
 
+  // Secure Receipt Image Type/Size Validation
+  if (receipt_image) {
+    if (receipt_image.startsWith("data:image/")) {
+      const isOkFormat = receipt_image.includes("image/jpeg") || receipt_image.includes("image/png") || receipt_image.includes("image/jpg") || receipt_image.includes("image/webp");
+      if (!isOkFormat) {
+        return res.status(400).json({ error: "Invalid receipt image format. Only WebP, JPEG, and PNG formats are allowed." });
+      }
+
+      const sizeBytes = receipt_image.length * 0.75;
+      if (sizeBytes > 7 * 1024 * 1024) {
+        return res.status(400).json({ error: "Selected receipt image exceeds maximum size limit of 7MB." });
+      }
+    } else {
+      return res.status(400).json({ error: "Invalid receipt image upload request." });
+    }
+  }
+
   const db = await readDb();
   // Resolve user name: use token name if available, fall back to DB lookup
   const creatorName = req.user.name || db.users.find((u: any) => u.id === req.user.id)?.name || "Unknown";
@@ -263,6 +280,7 @@ app.post("/api/products", authenticate, async (req: any, res) => {
     payment_method,
     total_price: isNaN(Number(total_price)) ? 0 : Number(total_price),
     product_image: product_image || undefined,
+    receipt_image: receipt_image || undefined,
     created_by: req.user.id,
     created_by_name: creatorName,
     created_at: new Date().toISOString(),
@@ -286,7 +304,7 @@ app.post("/api/products", authenticate, async (req: any, res) => {
 
 // 8. Product Management CRUD: UPDATE
 app.put("/api/products/:id", authenticate, async (req: any, res) => {
-  const { product_name, quantity, sold_quantity, purchase_date, payment_method, total_price, product_image, clear_image } = req.body;
+  const { product_name, quantity, sold_quantity, purchase_date, payment_method, total_price, product_image, clear_image, receipt_image, clear_receipt_image } = req.body;
   const db = await readDb();
   const productIndex = db.products.findIndex((p) => p.id === req.params.id);
 
@@ -339,6 +357,20 @@ app.put("/api/products/:id", authenticate, async (req: any, res) => {
     }
   }
 
+  // Validation receipt image
+  if (receipt_image && !clear_receipt_image) {
+    if (receipt_image.startsWith("data:image/")) {
+      const isOkFormat = receipt_image.includes("image/jpeg") || receipt_image.includes("image/png") || receipt_image.includes("image/jpg") || receipt_image.includes("image/webp");
+      if (!isOkFormat) {
+        return res.status(400).json({ error: "Invalid receipt image format. Only WebP, JPEG, and PNG formats are allowed." });
+      }
+      const sizeBytes = receipt_image.length * 0.75;
+      if (sizeBytes > 7 * 1024 * 1024) {
+        return res.status(400).json({ error: "Selected receipt image exceeds maximum size limit of 7MB." });
+      }
+    }
+  }
+
   const existingProduct = db.products[productIndex];
   const oldName = existingProduct.product_name;
   const editorName = req.user.name || db.users.find((u: any) => u.id === req.user.id)?.name || "Unknown";
@@ -351,6 +383,14 @@ app.put("/api/products/:id", authenticate, async (req: any, res) => {
     finalImage = product_image;
   }
 
+  // Preserve receipt image or assign new one
+  let finalReceiptImage = existingProduct.receipt_image;
+  if (clear_receipt_image) {
+    finalReceiptImage = undefined;
+  } else if (receipt_image) {
+    finalReceiptImage = receipt_image;
+  }
+
   const updatedProduct: Product = {
     ...existingProduct,
     product_name: product_name.trim(),
@@ -360,6 +400,7 @@ app.put("/api/products/:id", authenticate, async (req: any, res) => {
     payment_method,
     total_price: isNaN(Number(total_price)) ? 0 : Number(total_price),
     product_image: finalImage,
+    receipt_image: finalReceiptImage,
     updated_at: new Date().toISOString(),
   };
 

@@ -14,6 +14,7 @@ export interface Product {
   payment_method: "CBE Birr" | "Telebirr" | "Cash";
   total_price: number;
   product_image?: string; // base64 encoded
+  receipt_image?: string; // base64 encoded receipt photo
   created_by: string;
   created_by_name: string;
   created_at: string;

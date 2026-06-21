@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS products (
   payment_method TEXT NOT NULL CHECK (payment_method IN ('CBE Birr', 'Telebirr', 'Cash')),
   total_price NUMERIC NOT NULL,
   product_image TEXT,
+  receipt_image TEXT,
   created_by TEXT,
   created_by_name TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
