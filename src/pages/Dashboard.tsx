@@ -1136,10 +1136,24 @@ export default function Dashboard({ user, token, onLogout, onNavigate, lang, onL
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-2 pt-1 border-t border-zinc-100/40 bg-zinc-50/10">
-                                <button
+                          <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-zinc-100/40">
+                            <button
+                              onClick={() => setViewingProduct(p)}
+                              className="h-10 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-650 font-bold hover:bg-zinc-100 active:bg-zinc-150 text-[11px] flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none transition-all duration-150"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-zinc-500" />
+                              <span>{lang === "am" ? "ተመልከት" : "View"}</span>
+                            </button>
+                            <button
+                              onClick={() => handleEditClick(p)}
+                              className="h-10 rounded-xl bg-white border border-zinc-200 text-[#009b3a] font-bold hover:bg-zinc-50 active:bg-zinc-100 text-[11px] flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none transition-all duration-150"
+                            >
+                              <Edit className="w-3.5 h-3.5 text-[#009b3a]" />
+                              <span>{lang === "am" ? "ማስተካከያ" : "Edit"}</span>
+                            </button>
+                            <button
                               onClick={() => setDeletingProductId(p.id)}
-                              className="h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 font-bold hover:bg-rose-100 active:bg-rose-150 text-[11px] flex items-center justify-center gap-1 cursor-pointer focus:outline-none transition-all duration-150"
+                              className="h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 font-bold hover:bg-rose-100 active:bg-rose-150 text-[11px] flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none transition-all duration-150"
                             >
                               <Trash2 className="w-3.5 h-3.5 text-rose-600" />
                               <span>{lang === "am" ? "ሰርዝ" : "Delete"}</span>
