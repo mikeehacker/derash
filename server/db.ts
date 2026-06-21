@@ -211,10 +211,18 @@ export function writeDbLocal(state: DBState): void {
 export async function readDb(): Promise<DBState> {
   if (isSupabaseConfigured() && supabase) {
     try {
-      const { data: users, error: uErr } = await supabase.from("users").select("*");
-      const { data: products, error: pErr } = await supabase.from("products").select("*").order("created_at", { ascending: false });
-      const { data: audit_logs, error: lErr } = await supabase.from("audit_logs").select("*").order("created_at", { ascending: false });
-      const { data: sales, error: sErr } = await supabase.from("sales").select("*").order("created_at", { ascending: false });
+      // Query all tables in parallel to prevent sequential database roundtrip bottlenecks
+      const [usersRes, productsRes, logsRes, salesRes] = await Promise.all([
+        supabase.from("users").select("*"),
+        supabase.from("products").select("*").order("created_at", { ascending: false }),
+        supabase.from("audit_logs").select("*").order("created_at", { ascending: false }),
+        supabase.from("sales").select("*").order("created_at", { ascending: false })
+      ]);
+
+      const { data: users, error: uErr } = usersRes;
+      const { data: products, error: pErr } = productsRes;
+      const { data: audit_logs, error: lErr } = logsRes;
+      const { data: sales, error: sErr } = salesRes;
 
       if (uErr || pErr || lErr || sErr) {
         throw new Error(`Supabase query issue: ${uErr?.message || pErr?.message || lErr?.message || sErr?.message}`);
