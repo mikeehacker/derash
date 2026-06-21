@@ -240,11 +240,8 @@ export default function SoldProductFormModal({
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-5 border-b border-zinc-100 shrink-0 bg-white">
           <div>
-            <span className="text-[10px] font-black text-[#009b3a] tracking-widest uppercase block mb-0.5">
-              {lang === "am" ? "የሽያጭ ምዝገባ" : "Sales Transactions"}
-            </span>
             <h2 className="text-xl font-bold font-sans text-zinc-900 leading-tight">
-              {lang === "am" ? "የተሸጡ ዕቃዎች መሙያ ፎርም" : "Record Sold Items Form"}
+              {lang === "am" ? "የሽያጭ ምዝገባ" : "Sales Registration"}
             </h2>
           </div>
           <button

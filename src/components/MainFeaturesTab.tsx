@@ -494,7 +494,7 @@ ALTER TABLE audit_logs DISABLE ROW LEVEL SECURITY;`;
             </div>
             <div>
               <h4 className="text-base font-extrabold text-amber-600">
-                {lang === "am" ? "የተሸጡ ዕቃዎች መሙያ" : "Record Sold Items"}
+                {lang === "am" ? "የሽያጭ ምዝገባ" : "Record Sale"}
               </h4>
               <p className="text-xs text-zinc-550 leading-relaxed mt-1">
                 {lang === "am"
@@ -508,7 +508,7 @@ ALTER TABLE audit_logs DISABLE ROW LEVEL SECURITY;`;
             className="w-full sm:w-auto self-start px-6 h-12 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2.5 transition active:scale-95 cursor-pointer shadow-xs"
           >
             <ShoppingBag className="w-4.5 h-4.5 shrink-0" />
-            <span>{lang === "am" ? "የተሸጡ ዕቃዎች መሙያ ፎርም" : "Record Sold Items"}</span>
+            <span>{lang === "am" ? "የሽያጭ ምዝገባ" : "Record Sale"}</span>
           </button>
         </div>
       </div>

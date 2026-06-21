@@ -267,7 +267,7 @@ export default function SoldTab({
             className="min-h-[48px] px-6 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2.5 shadow-md active:scale-95 transition-transform duration-150 cursor-pointer shrink-0"
           >
             <ShoppingBag className="w-4.5 h-4.5 shrink-0" />
-            <span>{lang === "am" ? "የተሸጡ ዕቃዎች መሙያ ፎርም" : "Sold Items Form"}</span>
+            <span>{lang === "am" ? "የሽያጭ ምዝገባ" : "Record Sale"}</span>
           </button>
         </div>
       </div>
