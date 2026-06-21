@@ -133,7 +133,7 @@ export default function SoldProductFormModal({
         let quality = 0.85;
         let compressedB64 = "";
 
-        // Loop to scale down and compress until size is under 20,000 characters (approx 15 KB)
+        // Loop to scale down and compress until size is under 15,000 characters (strictly under 15 KB)
         while (true) {
           let { width, height } = img;
           if (width > maxDim || height > maxDim) {
@@ -154,7 +154,7 @@ export default function SoldProductFormModal({
 
           compressedB64 = canvas.toDataURL("image/jpeg", quality);
 
-          if (compressedB64.length <= 20000 || (maxDim <= 150 && quality <= 0.3)) {
+          if (compressedB64.length <= 15000 || (maxDim <= 150 && quality <= 0.3)) {
             break;
           }
 
