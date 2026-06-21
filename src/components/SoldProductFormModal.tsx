@@ -129,11 +129,11 @@ export default function SoldProductFormModal({
           return;
         }
 
-        let maxDim = 350;
+        let maxDim = 500;
         let quality = 0.85;
         let compressedB64 = "";
 
-        // Loop to scale down and compress until size is under 15,000 characters (strictly under 15 KB)
+        // Loop to scale down and compress until size is under 20,000 characters (strictly under 15 KB)
         while (true) {
           let { width, height } = img;
           if (width > maxDim || height > maxDim) {
@@ -152,14 +152,19 @@ export default function SoldProductFormModal({
           ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
 
-          compressedB64 = canvas.toDataURL("image/jpeg", quality);
+          // Try WebP first for superior compression and quality, fallback to JPEG if unsupported
+          let tempB64 = canvas.toDataURL("image/webp", quality);
+          if (!tempB64.startsWith("data:image/webp")) {
+            tempB64 = canvas.toDataURL("image/jpeg", quality);
+          }
+          compressedB64 = tempB64;
 
-          if (compressedB64.length <= 15000 || (maxDim <= 150 && quality <= 0.3)) {
+          if (compressedB64.length <= 20000 || (maxDim <= 250 && quality <= 0.3)) {
             break;
           }
 
           // Shrink dimensions and quality to fit target size
-          if (maxDim > 150) {
+          if (maxDim > 250) {
             maxDim -= 50;
           } else {
             quality -= 0.1;
