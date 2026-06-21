@@ -21,7 +21,7 @@ async function run() {
     })
   });
 
-  const regData = await regRes.json();
+  const regData = (await regRes.json()) as any;
   if (!regRes.ok) {
     console.error("Registration failed:", regData);
     return;
@@ -47,7 +47,7 @@ async function run() {
     })
   });
 
-  const prodData = await prodRes.json();
+  const prodData = (await prodRes.json()) as any;
   if (!prodRes.ok) {
     console.error("Product creation failed:", prodData);
     return;
@@ -72,7 +72,7 @@ async function run() {
     })
   });
 
-  const saleData = await saleRes.json();
+  const saleData = (await saleRes.json()) as any;
   if (!saleRes.ok) {
     console.error("Sale recording failed:", saleData);
     return;

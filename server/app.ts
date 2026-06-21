@@ -435,6 +435,7 @@ app.delete("/api/products/:id", authenticate, async (req: any, res) => {
   const deleterName = req.user.name || db.users.find((u: any) => u.id === req.user.id)?.name || "Unknown";
 
   db.products = db.products.filter((p) => p.id !== req.params.id);
+  db.sales = db.sales.filter((s) => s.product_id !== req.params.id);
   await writeDb(db);
 
   await logAudit(
