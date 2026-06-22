@@ -94,14 +94,14 @@ app.post("/api/auth/login", async (req, res) => {
 // 3. Authentication: Register
 app.post("/api/auth/register", async (req, res) => {
   const { name, email, password, role } = req.body;
-  
+
   if (!name || !email || !password) {
     return res.status(400).json({ error: "All fields (name, email, password) are required." });
   }
 
   const db = await readDb();
   const exists = db.users.some((u) => u.email.toLowerCase() === email.toLowerCase());
-  
+
   if (exists) {
     return res.status(400).json({ error: "An account with this email already exists." });
   }
@@ -140,7 +140,7 @@ app.post("/api/auth/register", async (req, res) => {
 app.get("/api/auth/me", authenticate, async (req: any, res) => {
   const db = await readDb();
   const user = db.users.find((u) => u.id === req.user.id);
-  
+
   if (!user) {
     return res.status(404).json({ error: "User profile not found." });
   }
@@ -195,7 +195,7 @@ app.get("/api/products", authenticate, async (req: any, res) => {
 app.get("/api/products/:id", authenticate, async (req: any, res) => {
   const db = await readDb();
   const product = db.products.find((p) => p.id === req.params.id);
-  
+
   if (!product || product.created_by !== req.user.id) {
     return res.status(404).json({ error: "Product not found." });
   }
@@ -210,7 +210,7 @@ app.post("/api/products", authenticate, async (req: any, res) => {
   if (!product_name || !product_name.trim()) {
     return res.status(400).json({ error: "Product name is required." });
   }
-  
+
   if (quantity == null || isNaN(Number(quantity)) || Number(quantity) < 0) {
     return res.status(400).json({ error: "Quantity must be a valid integer greater than or equal to 0." });
   }
@@ -320,7 +320,7 @@ app.put("/api/products/:id", authenticate, async (req: any, res) => {
   if (!product_name || !product_name.trim()) {
     return res.status(400).json({ error: "Product name cannot be empty." });
   }
-  
+
   if (quantity == null || isNaN(Number(quantity)) || Number(quantity) < 0) {
     return res.status(400).json({ error: "Quantity must be a valid integer greater than or equal to 0." });
   }
@@ -484,7 +484,7 @@ app.get("/api/analytics", authenticate, async (req: any, res) => {
     cbe: sales.filter((s) => s.payment_method === "CBE Birr").reduce((acc, s) => acc + (s.total_price || 0), 0),
     telebirr: sales.filter((s) => s.payment_method === "Telebirr").reduce((acc, s) => acc + (s.total_price || 0), 0),
     cash: sales.filter((s) => s.payment_method === "Cash").reduce((acc, s) => acc + (s.total_price || 0), 0),
-    
+
     // Qty based breakdown
     cbe_qty: sales.filter((s) => s.payment_method === "CBE Birr").reduce((acc, s) => acc + s.quantity, 0),
     telebirr_qty: sales.filter((s) => s.payment_method === "Telebirr").reduce((acc, s) => acc + s.quantity, 0),
@@ -494,7 +494,7 @@ app.get("/api/analytics", authenticate, async (req: any, res) => {
   // Time Series Summarization (Day, Week, Month totals based on sale_date)
   const now = new Date();
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
-  
+
   const todayStr = now.toISOString().split("T")[0];
   const startOfWeek = new Date(now.getTime() - 7 * MS_PER_DAY);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -534,7 +534,7 @@ app.get("/api/analytics", authenticate, async (req: any, res) => {
   // Product Growth Trend based on sale_date sorts
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const trendsMap: { [key: string]: { value: number; count: number; qty: number } } = {};
-  
+
   // Pre-populate last 6 calendar months
   for (let i = 5; i >= 0; i--) {
     const d = new Date();
@@ -604,7 +604,7 @@ app.post("/api/sales", authenticate, async (req: any, res) => {
     }
 
     const product = db.products[productIndex];
-    
+
     if (product.created_by !== req.user.id) {
       return res.status(403).json({ error: "Forbidden. You do not own this product." });
     }
@@ -664,7 +664,7 @@ app.delete("/api/sales/:id", authenticate, async (req: any, res) => {
   }
 
   const sale = db.sales[saleIndex];
- 
+
   if (sale.created_by !== req.user.id) {
     return res.status(403).json({ error: "Forbidden. You do not own this transaction." });
   }
@@ -700,7 +700,7 @@ app.delete("/api/sales/:id", authenticate, async (req: any, res) => {
 app.get("/api/supabase/status", authenticate, async (req, res) => {
   const isConfigured = isSupabaseConfigured();
   const connectionTest = await testConnection();
-  
+
   res.json({
     isConfigured,
     supabaseUrl: process.env.SUPABASE_URL ? `${process.env.SUPABASE_URL.substring(0, 15)}...` : undefined,
@@ -712,7 +712,7 @@ app.get("/api/supabase/status", authenticate, async (req, res) => {
 app.post("/api/supabase/sync", authenticate, requireAdmin, async (req: any, res) => {
   const localDb = readDbLocal();
   const syncResult = await syncLocalDataToSupabase(localDb);
-  
+
   if (syncResult.success) {
     await logAudit(
       req.user.id,
@@ -723,7 +723,7 @@ app.post("/api/supabase/sync", authenticate, requireAdmin, async (req: any, res)
       `Migrated local database state to Supabase: ${syncResult.syncedUsers} users, ${syncResult.syncedProducts} products, ${syncResult.syncedLogs} logs`
     );
   }
-  
+
   res.json(syncResult);
 });
 
