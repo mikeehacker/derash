@@ -206,10 +206,19 @@ export async function syncLocalDataToSupabase(localDb: { users: any[]; products:
 
     // 2. Sync Products
     if (localDb.products.length > 0) {
-      const { error: productsError } = await supabase
+      let { error: productsError } = await supabase
         .from("products")
         .upsert(localDb.products, { onConflict: "id" });
-      if (productsError) throw new Error(`Products sync error: ${productsError.message}`);
+      if (productsError) {
+        if (productsError.message?.includes("receipt_image") || productsError.message?.includes("column")) {
+          console.warn("Retrying products sync without receipt_image column...");
+          const sanitized = localDb.products.map(({ receipt_image, ...rest }) => rest);
+          const { error: retryErr } = await supabase.from("products").upsert(sanitized, { onConflict: "id" });
+          if (retryErr) throw new Error(`Products sync error: ${retryErr.message}`);
+        } else {
+          throw new Error(`Products sync error: ${productsError.message}`);
+        }
+      }
       syncedProducts = localDb.products.length;
     }
 
@@ -235,10 +244,19 @@ export async function syncLocalDataToSupabase(localDb: { users: any[]; products:
 
     // 4. Sync Sales
     if (localDb.sales && localDb.sales.length > 0) {
-      const { error: salesError } = await supabase
+      let { error: salesError } = await supabase
         .from("sales")
         .upsert(localDb.sales, { onConflict: "id" });
-      if (salesError) throw new Error(`Sales sync error: ${salesError.message}`);
+      if (salesError) {
+        if (salesError.message?.includes("receipt_image") || salesError.message?.includes("column")) {
+          console.warn("Retrying sales sync without receipt_image column...");
+          const sanitized = localDb.sales.map(({ receipt_image, ...rest }) => rest);
+          const { error: retryErr } = await supabase.from("sales").upsert(sanitized, { onConflict: "id" });
+          if (retryErr) throw new Error(`Sales sync error: ${retryErr.message}`);
+        } else {
+          throw new Error(`Sales sync error: ${salesError.message}`);
+        }
+      }
       syncedSales = localDb.sales.length;
     }
 

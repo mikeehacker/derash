@@ -656,7 +656,7 @@ export default function SoldTab({
                   <th className="py-4.5 px-4 text-center">{lang === "am" ? "የዕቃው ብዛት" : "Quantity"}</th>
                   <th className="py-4.5 px-4 text-right">{lang === "am" ? "የዕቃው ሙሉ ዋጋ" : "Total Price"}</th>
                   <th className="py-4.5 px-4 text-center">{lang === "am" ? "የክፍያ መንገድ" : "Payment Method"}</th>
-                  <th className="py-4.5 px-4 text-center">{lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}</th>
+                  <th className="py-4.5 px-4 text-center">{lang === "am" ? "ዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}</th>
                   <th className="py-4.5 px-6 text-center">{lang === "am" ? "ማስተካከያ" : "Adjustment"}</th>
                 </tr>
               </thead>
@@ -859,7 +859,7 @@ export default function SoldTab({
 
                       {/* Receipt Image Thumbnail preview in mobile view */}
                       <div className="bg-white/50 border border-zinc-100 p-2.5 rounded-xl text-xs font-bold text-zinc-700 flex items-center justify-between">
-                        <span className="text-[10px] text-zinc-400">{lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}</span>
+                        <span className="text-[10px] text-zinc-400">{lang === "am" ? "ዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}</span>
                         {(s.receipt_image || product?.receipt_image) ? (
                           <img
                             src={s.receipt_image || product?.receipt_image}

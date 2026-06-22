@@ -348,7 +348,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     formPurchaseDate: "የዕቃው የተመዘገበበት ቀን",
     formPaymentMethod: "የክፍያ መተላለፊያ",
     formImageAttachment: "የዕቃው ፎቶ",
-    formReceiptAttachment: "የዕቃው የተገዛበት ደረሰኝ ፎቶ",
+    formReceiptAttachment: "ዕቃው የተገዛበት ደረሰኝ ፎቶ",
     formImageAttached: "ፎቶው በተሳካ ሁኔታ ተያይዟል",
     formChangePhoto: "ፎቶ ቀይር",
     formSelectPhoto: "ምስል ለመጫን እዚህ ይጫኑ",

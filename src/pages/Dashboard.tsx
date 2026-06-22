@@ -298,7 +298,7 @@ export default function Dashboard({ user, token, onLogout, onNavigate, lang, onL
         total_price: totalPriceVal,
         sale_date: saleDate || getLocalGregorianDate(),
         payment_method: paymentMethod,
-        receipt_image: receiptImage
+        receipt_image: receiptImage || targetProduct.receipt_image
       });
 
       showBannerNotification(
@@ -1311,7 +1311,7 @@ export default function Dashboard({ user, token, onLogout, onNavigate, lang, onL
                 {viewingProduct.receipt_image && (
                   <div className="space-y-1.5">
                     <span className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-wider block pl-0.5">
-                      {lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}
+                      {lang === "am" ? "ዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo"}
                     </span>
                     <div className="relative overflow-hidden rounded-3xl border border-zinc-150 bg-zinc-50 shadow-xs h-40 flex items-center justify-center">
                       <img

@@ -405,6 +405,20 @@ app.put("/api/products/:id", authenticate, async (req: any, res) => {
   };
 
   db.products[productIndex] = updatedProduct;
+
+  // Also update receipt_image in all sales of this product so it propagates to the Sold Items table
+  if (db.sales) {
+    db.sales = db.sales.map((s) => {
+      if (s.product_id === updatedProduct.id) {
+        return {
+          ...s,
+          receipt_image: finalReceiptImage
+        };
+      }
+      return s;
+    });
+  }
+
   await writeDb(db);
 
   await logAudit(

@@ -230,12 +230,20 @@ export async function readDb(): Promise<DBState> {
       }
 
       if (Array.isArray(users) && Array.isArray(products) && Array.isArray(audit_logs) && Array.isArray(sales)) {
+        const localDb = readDbLocal();
+        const mergedProducts = products.map(p => {
+          const localP = localDb.products?.find(lp => lp.id === p.id);
+          const saleWithReceipt = sales?.find(s => s.product_id === p.id && s.receipt_image);
+          return {
+            ...p,
+            sold_quantity: typeof p.sold_quantity === "number" ? p.sold_quantity : 0,
+            receipt_image: p.receipt_image || localP?.receipt_image || saleWithReceipt?.receipt_image
+          };
+        });
+
         return {
           users,
-          products: products.map(p => ({
-            ...p,
-            sold_quantity: typeof p.sold_quantity === "number" ? p.sold_quantity : 0
-          })),
+          products: mergedProducts,
           audit_logs,
           sales
         };
@@ -282,7 +290,16 @@ export async function writeDb(state: DBState): Promise<void> {
       });
       if (changedProducts.length > 0) {
         const { error: pErr } = await supabase.from("products").upsert(changedProducts, { onConflict: "id" });
-        if (pErr) throw pErr;
+        if (pErr) {
+          if (pErr.message?.includes("receipt_image") || pErr.message?.includes("column")) {
+            console.warn("Retrying products upsert without receipt_image column...");
+            const sanitized = changedProducts.map(({ receipt_image, ...rest }) => rest);
+            const { error: retryErr } = await supabase.from("products").upsert(sanitized, { onConflict: "id" });
+            if (retryErr) throw retryErr;
+          } else {
+            throw pErr;
+          }
+        }
       }
 
       // 2. Delta-upsert changed users
@@ -325,7 +342,16 @@ export async function writeDb(state: DBState): Promise<void> {
       }) || [];
       if (changedSales.length > 0) {
         const { error: sErr } = await supabase.from("sales").upsert(changedSales, { onConflict: "id" });
-        if (sErr) throw sErr;
+        if (sErr) {
+          if (sErr.message?.includes("receipt_image") || sErr.message?.includes("column")) {
+            console.warn("Retrying sales upsert without receipt_image column...");
+            const sanitized = changedSales.map(({ receipt_image, ...rest }) => rest);
+            const { error: retryErr } = await supabase.from("sales").upsert(sanitized, { onConflict: "id" });
+            if (retryErr) throw retryErr;
+          } else {
+            throw sErr;
+          }
+        }
       }
     } catch (err: any) {
       console.error("Supabase write sync error: ", err.message || err);

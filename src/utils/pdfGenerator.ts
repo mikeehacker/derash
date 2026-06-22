@@ -1389,7 +1389,7 @@ export async function generateSoldUnitsPDF(
   drawTextWithCanvas(doc, lang === "am" ? "የዕቃው ብዛት" : "Qty", startX + 102, tableTop + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
   drawTextWithCanvas(doc, lang === "am" ? "የዕቃው ሙሉ ዋጋ" : "Total Price", startX + 130, tableTop + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "right" });
   drawTextWithCanvas(doc, lang === "am" ? "የክፍያ መንገድ" : "Payment", startX + 143, tableTop + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
-  drawTextWithCanvas(doc, lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo", startX + 167, tableTop + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
+  drawTextWithCanvas(doc, lang === "am" ? "ዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo", startX + 167, tableTop + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
 
   let currentY = tableTop + 8.5;
   const rowHeight = 16.5; 
@@ -1411,7 +1411,7 @@ export async function generateSoldUnitsPDF(
       drawTextWithCanvas(doc, lang === "am" ? "የዕቃው ብዛት" : "Qty", startX + 102, currentY + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
       drawTextWithCanvas(doc, lang === "am" ? "የዕቃው ሙሉ ዋጋ" : "Total Price", startX + 130, currentY + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "right" });
       drawTextWithCanvas(doc, lang === "am" ? "የክፍያ መንገድ" : "Payment", startX + 143, currentY + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
-      drawTextWithCanvas(doc, lang === "am" ? "የዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo", startX + 167, currentY + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
+      drawTextWithCanvas(doc, lang === "am" ? "ዕቃው የተገዛበት ደረሰኝ ፎቶ" : "Receipt Photo", startX + 167, currentY + 4.25, { fontSize: 7, isBold: true, color: "#ffffff", align: "center" });
       
       currentY += 8.5;
     }
