@@ -171,10 +171,6 @@ function appendImagesGallery(
       }
     }
 
-    // Page Number Footer in Gallery page
-    const currentPageNum = doc.internal.pages.length - 1;
-    drawTextWithCanvas(doc, `Page ${currentPageNum}`, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
-
     itemIndexOnPage++;
   });
 }
@@ -557,9 +553,6 @@ export async function generateInventoryPDF(products: Product[], lang: string = "
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  const pagesCount = doc.internal.pages.length - 1;
-  drawTextWithCanvas(doc, `Page 1 of ${pagesCount}`, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
-
   // Append images gallery
   const galleryItems = products.map((p) => ({
     name: p.product_name,
@@ -570,6 +563,14 @@ export async function generateInventoryPDF(products: Product[], lang: string = "
       : `Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | Date: ${p.purchase_date}`
   }));
   appendImagesGallery(doc, lang, galleryItems);
+
+  // Add dynamic page numbers to all pages
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    const pageNumText = lang === "am" ? `ገጽ ${i} ከ ${totalPages}` : `Page ${i} of ${totalPages}`;
+    drawTextWithCanvas(doc, pageNumText, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
+  }
 
   // Download PDF
   doc.save(`derash-inventory-${grToday}.pdf`);
@@ -1113,9 +1114,6 @@ export async function generateConsolidatedPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  const pagesCount = doc.internal.pages.length - 1;
-  drawTextWithCanvas(doc, `Page 1 of ${pagesCount}`, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
-
   // Append images gallery
   const galleryItems = products.map((p) => ({
     name: p.product_name,
@@ -1126,6 +1124,14 @@ export async function generateConsolidatedPDF(
       : `Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | Date: ${p.purchase_date}`
   }));
   appendImagesGallery(doc, lang, galleryItems);
+
+  // Add dynamic page numbers to all pages
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    const pageNumText = lang === "am" ? `ገጽ ${i} ከ ${totalPages}` : `Page ${i} of ${totalPages}`;
+    drawTextWithCanvas(doc, pageNumText, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
+  }
 
   // Download PDF
   doc.save(`derash-consolidated-ledger-${grToday}.pdf`);
@@ -1431,9 +1437,6 @@ export async function generateUnsoldAssetsPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  const pagesCount = doc.internal.pages.length - 1;
-  drawTextWithCanvas(doc, `Page 1 of ${pagesCount}`, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
-
   // Append images gallery
   const galleryItems = unsoldProducts.map((p) => ({
     name: p.product_name,
@@ -1444,6 +1447,14 @@ export async function generateUnsoldAssetsPDF(
       : `Stock left: ${p.quantity - p.sold_quantity} | Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()}`
   }));
   appendImagesGallery(doc, lang, galleryItems);
+
+  // Add dynamic page numbers to all pages
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    const pageNumText = lang === "am" ? `ገጽ ${i} ከ ${totalPages}` : `Page ${i} of ${totalPages}`;
+    drawTextWithCanvas(doc, pageNumText, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
+  }
 
   doc.save(`derash-unsold-assets-${grToday}.pdf`);
 }
@@ -1755,9 +1766,6 @@ export async function generateSoldUnitsPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  const pagesCount = doc.internal.pages.length - 1;
-  drawTextWithCanvas(doc, `Page 1 of ${pagesCount}`, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
-
   // Append images gallery
   const galleryItems = sales.map((s) => ({
     name: s.product_name,
@@ -1768,6 +1776,14 @@ export async function generateSoldUnitsPDF(
       : `Quantity: ${s.quantity} Pcs | Total: ETB ${Math.round(s.total_price).toLocaleString()} | Sale Date: ${s.sale_date}`
   }));
   appendImagesGallery(doc, lang, galleryItems);
+
+  // Add dynamic page numbers to all pages
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    const pageNumText = lang === "am" ? `ገጽ ${i} ከ ${totalPages}` : `Page ${i} of ${totalPages}`;
+    drawTextWithCanvas(doc, pageNumText, pageWidth - 15, pageHeight - 8, { fontSize: 7.5, color: "#64748b", align: "right" });
+  }
 
   doc.save(`derash-sold-revenue-${grToday}.pdf`);
 }
