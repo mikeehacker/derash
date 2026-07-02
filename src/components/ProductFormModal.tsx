@@ -119,11 +119,11 @@ export default function ProductFormModal({
           return;
         }
 
-        let maxDim = 500;
-        let quality = 0.85;
+        let maxDim = 1200;
+        let quality = 0.90;
         let compressedB64 = "";
 
-        // Loop to scale down and compress until size is under 20,000 characters (strictly under 15 KB)
+        // Loop to scale down and compress to a high-quality budget (under 350,000 chars, approx 260 KB)
         while (true) {
           let { width, height } = img;
           if (width > maxDim || height > maxDim) {
@@ -149,13 +149,13 @@ export default function ProductFormModal({
           }
           compressedB64 = tempB64;
 
-          if (compressedB64.length <= 20000 || (maxDim <= 250 && quality <= 0.3)) {
+          if (compressedB64.length <= 350000 || (maxDim <= 400 && quality <= 0.4)) {
             break;
           }
 
           // Shrink dimensions and quality to fit target size
-          if (maxDim > 250) {
-            maxDim -= 50;
+          if (maxDim > 400) {
+            maxDim -= 100;
           } else {
             quality -= 0.1;
           }
@@ -224,8 +224,8 @@ export default function ProductFormModal({
           return;
         }
 
-        let maxDim = 500;
-        let quality = 0.85;
+        let maxDim = 1200;
+        let quality = 0.90;
         let compressedB64 = "";
 
         while (true) {
@@ -252,12 +252,12 @@ export default function ProductFormModal({
           }
           compressedB64 = tempB64;
 
-          if (compressedB64.length <= 20000 || (maxDim <= 250 && quality <= 0.3)) {
+          if (compressedB64.length <= 350000 || (maxDim <= 400 && quality <= 0.4)) {
             break;
           }
 
-          if (maxDim > 250) {
-            maxDim -= 50;
+          if (maxDim > 400) {
+            maxDim -= 100;
           } else {
             quality -= 0.1;
           }
