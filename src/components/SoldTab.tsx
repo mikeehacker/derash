@@ -2,7 +2,7 @@ import React from "react";
 import { Product, User, Sale } from "../types";
 import { Language } from "../utils/translations";
 import {
-  ShoppingBag, HandCoins, Clock, Eye, Sparkles, Edit, Trash2, Calendar, RefreshCcw, Cloud, TrendingUp, BarChart2
+  ShoppingBag, HandCoins, Clock, Eye, Sparkles, Edit, Trash2, Calendar, RefreshCcw, Cloud, TrendingUp, BarChart2, Search
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -62,6 +62,7 @@ export default function SoldTab({
   const [filterEtYear, setFilterEtYear] = React.useState<string>("all");
   const [filterEtMonth, setFilterEtMonth] = React.useState<string>("all");
   const [filterEtDay, setFilterEtDay] = React.useState<string>("all");
+  const [filterProductName, setFilterProductName] = React.useState<string>("");
 
   const monthsList = React.useMemo(() => {
     return lang === "am" ? ETHIOPIAN_MONTHS_AM : ETHIOPIAN_MONTHS_EN;
@@ -87,20 +88,28 @@ export default function SoldTab({
     return Array.from(yearsSet).sort((a, b) => b - a);
   }, [sales]);
 
-  // Filter sales using the Ethiopian calendar sale date filters
+  // Filter sales using the Ethiopian calendar sale date filters and product name query
   const filteredSales = React.useMemo(() => {
     return sales.filter((s) => {
       try {
+        if (filterProductName.trim() !== "") {
+          if (!s.product_name.toLowerCase().includes(filterProductName.toLowerCase())) {
+            return false;
+          }
+        }
         const et = toEthiopian(s.sale_date);
         if (filterEtYear !== "all" && et.year !== Number(filterEtYear)) return false;
         if (filterEtMonth !== "all" && et.month !== Number(filterEtMonth)) return false;
         if (filterEtDay !== "all" && et.day !== Number(filterEtDay)) return false;
         return true;
       } catch {
+        if (filterProductName.trim() !== "") {
+          return s.product_name.toLowerCase().includes(filterProductName.toLowerCase());
+        }
         return true;
       }
     });
-  }, [sales, filterEtYear, filterEtMonth, filterEtDay]);
+  }, [sales, filterEtYear, filterEtMonth, filterEtDay, filterProductName]);
 
   // Filter-responsive dynamic calculations
   const filteredMetrics = React.useMemo(() => {
@@ -113,7 +122,7 @@ export default function SoldTab({
     return { qty, worth };
   }, [filteredSales]);
 
-  const isFilterActive = filterEtYear !== "all" || filterEtMonth !== "all" || filterEtDay !== "all";
+  const isFilterActive = filterEtYear !== "all" || filterEtMonth !== "all" || filterEtDay !== "all" || filterProductName.trim() !== "";
 
   // --- Bar chart: sold vs remaining per product ---
   const chartData = React.useMemo(() => {
@@ -549,8 +558,25 @@ export default function SoldTab({
         </div>
 
         {/* Ethiopian Calendar Filter Panel */}
-        <div className="px-6 py-5 bg-zinc-50/25 border-b border-zinc-100 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+        <div className="px-6 py-5 bg-zinc-50/25 border-b border-zinc-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           
+          {/* Search by Product Name */}
+          <div>
+            <label className="block text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 pl-0.5">
+              <Search className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+              <span>{lang === "am" ? "በምርት ስም ፈልግ" : "Search Product Name"}</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                value={filterProductName}
+                onChange={(e) => setFilterProductName(e.target.value)}
+                placeholder={lang === "am" ? "በምርት ስም ፈልግ..." : "Search by product name..."}
+                className="w-full min-h-[40px] pl-9 pr-4 text-xs bg-white border-2 border-zinc-100 focus:border-[#009b3a] rounded-xl focus:ring-1 focus:ring-[#009b3a] focus:outline-none transition duration-150 font-bold text-zinc-805 placeholder-zinc-400 shadow-xs"
+              />
+            </div>
+          </div>
+
           {/* Year Select dropdown */}
           <div>
             <label className="block text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 pl-0.5">
@@ -612,6 +638,7 @@ export default function SoldTab({
                 setFilterEtYear("all");
                 setFilterEtMonth("all");
                 setFilterEtDay("all");
+                setFilterProductName("");
               }}
               disabled={!isFilterActive}
               className="w-full min-h-[40px] px-4 py-2 bg-white hover:bg-zinc-100 active:bg-zinc-150 text-zinc-505 hover:text-zinc-800 rounded-xl text-xs font-bold border border-zinc-200.5 dynamic-shadow transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-center"
@@ -629,9 +656,10 @@ export default function SoldTab({
               <span className="w-2 h-2 rounded-full bg-[#009b3a] animate-pulse shrink-0"></span>
               <p className="leading-snug">
                 {lang === "am" 
-                  ? `ንቁ የኢትዮጵያ የዘመን አቆጣጠር ማጣሪያ ተተግብሯል፦ ` 
-                  : `Active Ethiopian Date filter applied: `}
+                  ? `ንቁ ማጣሪያ ተተግብሯል፦ ` 
+                  : `Active filter applied: `}
                 <span className="text-emerald-990 font-black">
+                  {filterProductName ? `"${filterProductName}" ` : ""}
                   {filterEtYear !== "all" ? `${filterEtYear} ${lang === "am" ? "ዓ.ም " : "EC "}` : ""}
                   {filterEtMonth !== "all" ? `${monthsList[Number(filterEtMonth) - 1]} ` : ""}
                   {filterEtDay !== "all" ? `${lang === "am" ? "ቀን " : "day "}${filterEtDay}` : ""}

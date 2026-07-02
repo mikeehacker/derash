@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Product } from "../types";
-import { X, ShoppingBag, Landmark, PhoneCall, HandCoins, AlertCircle, Upload, Image as ImageIcon } from "lucide-react";
+import { X, ShoppingBag, Landmark, PhoneCall, HandCoins, AlertCircle, Upload, Image as ImageIcon, Search } from "lucide-react";
 import { Language, translations } from "../utils/translations";
 import EthiopianDatePicker from "./EthiopianDatePicker";
 import { getLocalGregorianDate } from "../utils/ethiopianCalendar";
@@ -31,6 +31,7 @@ export default function SoldProductFormModal({
 
   // Selected product state
   const [selectedProductId, setSelectedProductId] = useState("");
+  const [productSearchQuery, setProductSearchQuery] = useState("");
   const [soldQuantity, setSoldQuantity] = useState<number | "">("");
   const [unitPrice, setUnitPrice] = useState<number | "">("");
   const [paymentMethod, setPaymentMethod] = useState<"CBE Birr" | "Telebirr" | "Cash">("CBE Birr");
@@ -42,6 +43,11 @@ export default function SoldProductFormModal({
 
   // Derive the active product if any is selected
   const activeProduct = products.find((p) => p.id === selectedProductId);
+
+  // Filter products based on search query
+  const filteredProducts = products.filter((p) =>
+    p.product_name.toLowerCase().includes(productSearchQuery.toLowerCase())
+  );
 
   // Auto-populate or calculate values when activeProduct changes
   useEffect(() => {
@@ -64,6 +70,7 @@ export default function SoldProductFormModal({
   useEffect(() => {
     if (isOpen) {
       setSelectedProductId("");
+      setProductSearchQuery("");
       setSoldQuantity("");
       setUnitPrice("");
       setPaymentMethod("CBE Birr");
@@ -268,6 +275,18 @@ export default function SoldProductFormModal({
                 {lang === "am" ? "የዕቃው ስም" : "Product Name Selection"}
               </label>
               
+              {/* Product search input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={productSearchQuery}
+                  onChange={(e) => setProductSearchQuery(e.target.value)}
+                  placeholder={lang === "am" ? "በምርት ስም ፈልግ..." : "Search by product name..."}
+                  className="w-full min-h-[44px] pl-10 pr-4 text-xs bg-zinc-50 hover:bg-zinc-100/30 focus:bg-white border-2 border-zinc-100 focus:border-[#009b3a] rounded-2xl focus:ring-1 focus:ring-[#009b3a] focus:outline-none transition-all duration-200 font-bold text-zinc-850 placeholder-zinc-400"
+                />
+                <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              </div>
+
               <select
                 required
                 value={selectedProductId}
@@ -277,7 +296,7 @@ export default function SoldProductFormModal({
                 <option value="">
                   {lang === "am" ? "-- እባክዎን የሚሸጥ ዕቃ ይምረጡ --" : "-- Select Product to sell --"}
                 </option>
-                {products.map((p) => {
+                {filteredProducts.map((p) => {
                   const rem = Math.max(0, p.quantity - (p.sold_quantity ?? 0));
                   return (
                     <option key={p.id} value={p.id} disabled={rem <= 0}>
