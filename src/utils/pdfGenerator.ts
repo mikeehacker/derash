@@ -42,138 +42,7 @@ function getFormat(dataUrl: string | null | undefined): string {
   return "PNG";
 }
 
-// Append a beautiful high-resolution image gallery at the end of the PDF
-function appendImagesGallery(
-  doc: jsPDF,
-  lang: string,
-  items: Array<{
-    name: string;
-    productImg?: string | null;
-    receiptImg?: string | null;
-    details?: string;
-  }>
-) {
-  const itemsWithImages = items.filter(item => item.productImg || item.receiptImg);
-  if (itemsWithImages.length === 0) return;
 
-  const pageHeight = doc.internal.pageSize.getHeight();
-  const pageWidth = doc.internal.pageSize.getWidth();
-
-  doc.addPage();
-
-  // Left banner border accent (Ethiopian Green)
-  doc.setFillColor(0, 155, 58);
-  doc.rect(0, 0, 5, pageHeight, "F");
-
-  // Title
-  const galleryTitle = lang === "am" ? "የዕቃዎች እና የደረሰኞች ፎቶዎች ማውጫ (Gallery)" : "Merchandise & Receipts Gallery Appendix";
-  drawTextWithCanvas(doc, galleryTitle, 15, 15, { fontSize: 13, isBold: true, color: "#0f172a" });
-
-  const subtitle = lang === "am"
-    ? "ለግልጽነት እና ለሂሳብ ቁጥጥር እንዲረዳ የተያያዙ ከፍተኛ ጥራት ያላቸው ምስሎች"
-    : "High-resolution attachments for transaction validation and audit clarity.";
-  drawTextWithCanvas(doc, subtitle, 15, 22, { fontSize: 8, color: "#64748b" });
-
-  // Divider
-  doc.setDrawColor(226, 232, 240);
-  doc.setLineWidth(0.4);
-  doc.line(15, 26, pageWidth - 15, 26);
-
-  const startX = 15;
-  const colWidth = (pageWidth - 30 - 6) / 2; // ~87mm wide
-  const cardHeight = 65; // ~65mm high
-
-  let itemIndexOnPage = 0;
-
-  itemsWithImages.forEach((item, index) => {
-    // Fit up to 6 cards per page (3 rows of 2 columns)
-    if (itemIndexOnPage >= 6) {
-      doc.addPage();
-      // Accent
-      doc.setFillColor(0, 155, 58);
-      doc.rect(0, 0, 5, pageHeight, "F");
-
-      // Gallery Header
-      drawTextWithCanvas(doc, galleryTitle, 15, 14, { fontSize: 10, isBold: true, color: "#0f172a" });
-      doc.setDrawColor(226, 232, 240);
-      doc.setLineWidth(0.4);
-      doc.line(15, 18, pageWidth - 15, 18);
-
-      itemIndexOnPage = 0;
-    }
-
-    const row = Math.floor(itemIndexOnPage / 2);
-    const col = itemIndexOnPage % 2;
-
-    const isFirstPage = index < 6;
-    const startY = isFirstPage ? 32 : 24;
-    const cardY = startY + row * (cardHeight + 6);
-    const cardX = startX + col * (colWidth + 6);
-
-    // Draw container card box
-    doc.setFillColor(250, 250, 250);
-    doc.setDrawColor(226, 232, 240);
-    doc.setLineWidth(0.25);
-    doc.rect(cardX, cardY, colWidth, cardHeight, "FD");
-
-    // Title / Product Name inside card
-    drawTextWithCanvas(doc, item.name, cardX + 4, cardY + 5.5, { fontSize: 8.5, isBold: true, color: "#0f172a" });
-    if (item.details) {
-      drawTextWithCanvas(doc, item.details, cardX + 4, cardY + 11.5, { fontSize: 7, color: "#475569" });
-    }
-
-    // Image sizing
-    const singleImgSize = 36;
-    const imgY = cardY + 16;
-
-    if (item.productImg && item.receiptImg) {
-      // Both images exist: side-by-side
-      try {
-        doc.addImage(item.productImg, getFormat(item.productImg), cardX + 4, imgY, singleImgSize, singleImgSize);
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.25);
-        doc.rect(cardX + 4, imgY, singleImgSize, singleImgSize);
-      } catch (e) {
-        // failed image placeholder
-      }
-      drawTextWithCanvas(doc, lang === "am" ? "የምርት ፎቶ" : "Product Photo", cardX + 4 + singleImgSize / 2, imgY + singleImgSize + 3.5, { fontSize: 6.5, color: "#64748b", align: "center" });
-
-      try {
-        doc.addImage(item.receiptImg, getFormat(item.receiptImg), cardX + 4 + singleImgSize + 4, imgY, singleImgSize, singleImgSize);
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.25);
-        doc.rect(cardX + 4 + singleImgSize + 4, imgY, singleImgSize, singleImgSize);
-      } catch (e) {
-        // failed image placeholder
-      }
-      drawTextWithCanvas(doc, lang === "am" ? "ደረሰኝ ፎቶ" : "Receipt Photo", cardX + 4 + singleImgSize + 4 + singleImgSize / 2, imgY + singleImgSize + 3.5, { fontSize: 6.5, color: "#64748b", align: "center" });
-
-    } else {
-      // Centered single image
-      const aloneImg = item.productImg || item.receiptImg;
-      const isReceipt = !!item.receiptImg;
-      if (aloneImg) {
-        const centerImgWidth = 48;
-        const centerImgHeight = 36;
-        const centerImgX = cardX + (colWidth - centerImgWidth) / 2;
-        try {
-          doc.addImage(aloneImg, getFormat(aloneImg), centerImgX, imgY, centerImgWidth, centerImgHeight);
-          doc.setDrawColor(226, 232, 240);
-          doc.setLineWidth(0.25);
-          doc.rect(centerImgX, imgY, centerImgWidth, centerImgHeight);
-        } catch (e) {
-          // failed image placeholder
-        }
-        const aloneLabel = isReceipt
-          ? (lang === "am" ? "የተገዛበት ደረሰኝ ፎቶ" : "Purchase Receipt Photo")
-          : (lang === "am" ? "የዕቃው ፎቶ" : "Product Photo");
-        drawTextWithCanvas(doc, aloneLabel, cardX + colWidth / 2, imgY + centerImgHeight + 3.5, { fontSize: 6.5, color: "#64748b", align: "center" });
-      }
-    }
-
-    itemIndexOnPage++;
-  });
-}
 
 // Draw crisp Amharic or Latin text using high-res canvas rendering directly on jsPDF
 function drawTextWithCanvas(
@@ -553,16 +422,7 @@ export async function generateInventoryPDF(products: Product[], lang: string = "
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  // Append images gallery
-  const galleryItems = products.map((p) => ({
-    name: p.product_name,
-    productImg: loadedImages[p.id],
-    receiptImg: loadedReceipts[p.id],
-    details: lang === "am"
-      ? `ዋጋ፦ ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | ቀን፦ ${p.purchase_date}`
-      : `Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | Date: ${p.purchase_date}`
-  }));
-  appendImagesGallery(doc, lang, galleryItems);
+
 
   // Add dynamic page numbers to all pages
   const totalPages = doc.internal.pages.length - 1;
@@ -1114,16 +974,7 @@ export async function generateConsolidatedPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  // Append images gallery
-  const galleryItems = products.map((p) => ({
-    name: p.product_name,
-    productImg: loadedImages[p.id],
-    receiptImg: loadedReceipts[p.id],
-    details: lang === "am"
-      ? `ዋጋ፦ ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | ቀን፦ ${p.purchase_date}`
-      : `Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()} | Date: ${p.purchase_date}`
-  }));
-  appendImagesGallery(doc, lang, galleryItems);
+
 
   // Add dynamic page numbers to all pages
   const totalPages = doc.internal.pages.length - 1;
@@ -1437,16 +1288,7 @@ export async function generateUnsoldAssetsPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  // Append images gallery
-  const galleryItems = unsoldProducts.map((p) => ({
-    name: p.product_name,
-    productImg: loadedImages[p.id],
-    receiptImg: loadedReceipts[p.id],
-    details: lang === "am"
-      ? `ቀሪ ክምችት፦ ${p.quantity - p.sold_quantity} | ዋጋ፦ ETB ${Math.round(p.total_price / p.quantity).toLocaleString()}`
-      : `Stock left: ${p.quantity - p.sold_quantity} | Price: ETB ${Math.round(p.total_price / p.quantity).toLocaleString()}`
-  }));
-  appendImagesGallery(doc, lang, galleryItems);
+
 
   // Add dynamic page numbers to all pages
   const totalPages = doc.internal.pages.length - 1;
@@ -1766,16 +1608,7 @@ export async function generateSoldUnitsPDF(
   const creditLine = "© 2026 Derash Inventory Management. All rights reserved.";
   drawTextWithCanvas(doc, creditLine, startX, pageHeight - 8, { fontSize: 7.5, color: "#94a3b8" });
 
-  // Append images gallery
-  const galleryItems = sales.map((s) => ({
-    name: s.product_name,
-    productImg: loadedImages[s.id],
-    receiptImg: loadedReceipts[s.id],
-    details: lang === "am"
-      ? `ብዛት፦ ${s.quantity} Pcs | ጠቅላላ፦ ETB ${Math.round(s.total_price).toLocaleString()} | የሽያጭ ቀን፦ ${s.sale_date}`
-      : `Quantity: ${s.quantity} Pcs | Total: ETB ${Math.round(s.total_price).toLocaleString()} | Sale Date: ${s.sale_date}`
-  }));
-  appendImagesGallery(doc, lang, galleryItems);
+
 
   // Add dynamic page numbers to all pages
   const totalPages = doc.internal.pages.length - 1;
